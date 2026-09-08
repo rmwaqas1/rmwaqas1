@@ -18,7 +18,7 @@ Querying the index afterwards:
     con = duckdb.connect(os.path.expanduser("~/a2aj/a2aj.duckdb"))
     con.execute("LOAD fts;")
     con.execute(
-        "SELECT citation, style, decided, cited_by, score FROM ("
+        "SELECT citation, style, decided, cited_by, upstream_license, score FROM ("
         "  SELECT *, fts_main_case_text.match_bm25(id, ?) AS score FROM case_text) "
         "WHERE score IS NOT NULL ORDER BY score DESC LIMIT 20",
         ["internal flight alternative"]).fetchall()
@@ -119,15 +119,21 @@ def build_index(dest):
         return
 
     con.execute("INSTALL fts; LOAD fts;")
+    # Carry upstream_license into the index so the non-commercial court sets
+    # stay distinguishable from the unrestricted IRB ones at query time. Older
+    # parquet may not have the column, so fall back to NULL rather than failing.
+    cols = {r[0] for r in con.execute("DESCRIBE cases").fetchall()}
+    licence = ("upstream_license" if "upstream_license" in cols
+               else "NULL AS upstream_license")
     # The FTS index needs a unique document key; citations repeat across
     # datasets and are sometimes null, so key on a synthetic id.
-    con.execute("""CREATE OR REPLACE TABLE case_text AS
-                   SELECT row_number() OVER () AS id,
-                          citation_en AS citation, dataset, name_en AS style,
-                          document_date_en AS decided, url_en AS src,
-                          citing_cases_count AS cited_by,
-                          unofficial_text_en AS txt
-                   FROM cases WHERE unofficial_text_en IS NOT NULL""")
+    con.execute(f"""CREATE OR REPLACE TABLE case_text AS
+                    SELECT row_number() OVER () AS id,
+                           citation_en AS citation, dataset, name_en AS style,
+                           document_date_en AS decided, url_en AS src,
+                           citing_cases_count AS cited_by, {licence},
+                           unofficial_text_en AS txt
+                    FROM cases WHERE unofficial_text_en IS NOT NULL""")
     con.execute("PRAGMA create_fts_index('case_text','id','txt', overwrite=1)")
     n = con.execute("SELECT count(*) FROM case_text").fetchone()[0]
     print(f"\nIndexed {n:,} decisions -> {db}")
