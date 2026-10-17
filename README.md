@@ -2,7 +2,6 @@
 - ⚖️ I build AI tools for litigation work in Ontario, and I care most about making them safe to rely on
 - 🛠️ **Building:** Affidavi (local-first software for Ontario litigation documents, with an offline AI assistant) and CourtPilot (Ontario civil procedure support)
 - 📝 **Safety notes:** [Safety in legal AI: failure modes, checklist and test cases](https://github.com/rmwaqas1/legal-ai-safety-notes)
-- 🌱 Earlier: blockchain and Hyperledger (Aries)
 - 📫 How to reach me: Twitter @rmwaq
 
 <!---
