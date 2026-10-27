@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memo Tracker</title>
+<link rel="stylesheet" href="styles.css">
+<script src="vendor/mammoth.browser.min.js"></script>
+<script src="vendor/pdf.min.js"></script>
+<script src="citations.js"></script>
+</head>
+<body>
+<header class="top">
+  <h1>Memo Tracker</h1>
+  <nav>
+    <button data-view="dashboard" class="active">Dashboard</button>
+    <button data-view="matters">Matters</button>
+    <button data-view="checker">Citation checker</button>
+    <button data-view="library">Case library</button>
+    <button data-view="backup">Backup</button>
+  </nav>
+</header>
+
+<main>
+  <!-- Dashboard -->
+  <section id="view-dashboard" class="view">
+    <div class="stats" id="stats"></div>
+    <h2>Deadlines</h2>
+    <table class="grid" id="deadline-table"></table>
+  </section>
+
+  <!-- Matters list + detail -->
+  <section id="view-matters" class="view hidden">
+    <div class="split">
+      <aside>
+        <div class="row">
+          <input id="matter-search" placeholder="Search matters">
+          <button id="new-matter" class="primary">+ New</button>
+        </div>
+        <select id="matter-filter">
+          <option value="open">Open matters</option>
+          <option value="all">All matters</option>
+          <option value="unpaid">Not fully paid</option>
+          <option value="closed">Closed</option>
+        </select>
+        <ul id="matter-list" class="list"></ul>
+      </aside>
+      <div id="matter-detail" class="detail"><p class="muted">Pick a matter or create a new one.</p></div>
+    </div>
+  </section>
+
+  <!-- Citation checker -->
+  <section id="view-checker" class="view hidden">
+    <div class="row">
+      <label class="filebtn">Open a memo (.docx)<input type="file" id="checker-file" accept=".docx"></label>
+      <select id="checker-version"><option value="">…or pick a saved memo version</option></select>
+      <span class="muted">Hover a citation to see the paragraph it points to.</span>
+    </div>
+    <div class="split checker">
+      <article id="checker-doc" class="doc"><p class="muted">No memo open.</p></article>
+      <aside id="checker-report"></aside>
+    </div>
+  </section>
+
+  <!-- Case library -->
+  <section id="view-library" class="view hidden">
+    <div class="row">
+      <label class="filebtn primary">Add decisions (PDF, .docx, .txt)<input type="file" id="case-files" accept=".pdf,.docx,.txt" multiple></label>
+      <button id="paste-case">Paste a decision</button>
+      <button id="export-library">Export library for Word add-in</button>
+    </div>
+    <p class="muted">Decisions stay on this computer. The checker only shows text from decisions you add here, so a
+      citation that points to a case you haven't loaded is flagged, never filled in.</p>
+    <table class="grid" id="case-table"></table>
+  </section>
+
+  <!-- Backup -->
+  <section id="view-backup" class="view hidden">
+    <h2>Backup</h2>
+    <p>Everything is stored in this browser only (IndexedDB). Clearing site data deletes it, so export a backup regularly.</p>
+    <div class="row">
+      <button id="export-all" class="primary">Export full backup (.json)</button>
+      <label class="filebtn">Restore from backup<input type="file" id="import-all" accept=".json"></label>
+    </div>
+  </section>
+</main>
+
+<div id="popover" class="popover hidden"></div>
+<dialog id="dialog"></dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
