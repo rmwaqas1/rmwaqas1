@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Citation Checker</title>
+<script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+<script src="../citations.js"></script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 12px; }
+  #current { min-height: 120px; }
+  #current .src { font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 6px; margin-bottom: 6px; }
+  #current .pn { font-weight: 600; color: var(--accent); margin-right: 4px; }
+  .list li { font-size: 13px; }
+</style>
+</head>
+<body>
+  <h1>Citation Checker</h1>
+  <p class="muted" id="lib-status">No case library loaded.</p>
+  <div class="row">
+    <label class="filebtn">Load case-library.json<input type="file" id="lib-file" accept=".json"></label>
+    <button id="scan" class="primary">Scan document</button>
+  </div>
+
+  <h3>Cited paragraph</h3>
+  <div id="current" class="doc" style="padding:12px;max-height:none">
+    <p class="muted">Click on a citation in your memo (for example “2019 SCC 65 at para 23”) and the paragraph appears here.</p>
+  </div>
+
+  <h3>All citations</h3>
+  <div id="summary"></div>
+  <ul id="hits" class="list"></ul>
+
+  <script src="taskpane.js"></script>
+</body>
+</html>
